@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+    	<file>qss/style.qss</file>
+        <file>images/icon.svg</file>
+        <file>images/info_cover.svg</file>
+        <file>images/next-hover.svg</file>
+        <file>images/next-normal.svg</file>
+        <file>images/next-press.svg</file>
+        <file>images/pause-hover.svg</file>
+        <file>images/pause-normal.svg</file>
+        <file>images/pause-press.svg</file>
+        <file>images/play-hover.svg</file>
+        <file>images/play-normal.svg</file>
+        <file>images/play-press.svg</file>
+        <file>images/previous-hover.svg</file>
+        <file>images/previous-normal.svg</file>
+        <file>images/previous-press.svg</file>
+    </qresource>
+</RCC>
