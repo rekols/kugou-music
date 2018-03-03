@@ -10,50 +10,14 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     setFixedHeight(75);
     initUI();
 
-    connect(m_player, &QMediaPlayer::stateChanged, this,
-            [=] (QMediaPlayer::State status) {
-                if (status == QMediaPlayer::PlayingState) {
-                    m_playButton->setNormalPic(":/images/pause-normal.svg");
-                    m_playButton->setHoverPic(":/images/pause-hover.svg");
-                    m_playButton->setPressPic(":/images/pause-press.svg");
-                } else {
-                    m_playButton->setNormalPic(":/images/play-normal.svg");
-                    m_playButton->setHoverPic(":/images/play-hover.svg");
-                    m_playButton->setPressPic(":/images/play-press.svg");
-                }
-            });
-
-    connect(m_playButton, &DImageButton::clicked, this,
-            [=] {
-                if (m_player->state() == QMediaPlayer::PlayingState)
-                    m_player->pause();
-                else
-                    m_player->play();
-            });
+    connect(m_player, &QMediaPlayer::stateChanged, this, &BottomWidget::handleStateChanged);
+    connect(m_playButton, &DImageButton::clicked, this, &BottomWidget::playButtonClicked);
+    connect(m_player, &QMediaPlayer::durationChanged, this, &BottomWidget::handleDurationChanged);
+    connect(m_player, &QMediaPlayer::positionChanged, this, &BottomWidget::handlePositionChanged);
 
     connect(m_songSlider, &QSlider::sliderPressed, this,
             [=] {
                 m_player->setPosition(m_songSlider->value());
-            });
-
-    connect(m_player, &QMediaPlayer::durationChanged, this,
-            [=](qint64 duration) {
-                QTime time(0, 0, 0);
-                time = time.addMSecs(duration);
-
-                m_songSlider->setRange(0, duration);
-                m_duration = time.toString("mm:ss");
-                m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
-            });
-
-    connect(m_player, &QMediaPlayer::positionChanged, this,
-            [=](qint64 position) {
-                QTime time(0, 0, 0);
-                time = time.addMSecs(position);
-
-                m_songSlider->setValue(position);
-                m_position = time.toString("mm:ss");
-                m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
             });
 }
 
@@ -70,9 +34,6 @@ void BottomWidget::initUI()
     m_playButton = new DImageButton(":/images/play-normal.svg",
                                     ":/images/play-hover.svg",
                                     ":/images/play-press.svg");
-    m_pauseButton = new DImageButton(":/images/pause-normal.svg",
-                                     ":/images/pause-hover.svg",
-                                     ":/images/pause-press.svg");
     m_nextButton = new DImageButton(":/images/next-normal.svg",
                                     ":/images/next-hover.svg",
                                     ":/images/next-press.svg");
@@ -83,9 +44,7 @@ void BottomWidget::initUI()
 
     m_previousButton->setFixedSize(30, 30);
     m_playButton->setFixedSize(30, 30);
-    m_pauseButton->setFixedSize(30, 30);
     m_nextButton->setFixedSize(30, 30);
-    m_pauseButton->hide();
 
     m_coverWidget->setFixedSize(50, 50);
     m_coverWidget->load(QString(":/images/info_cover.svg"));
@@ -122,6 +81,47 @@ void BottomWidget::initUI()
     layout->addWidget(m_songSlider);
     layout->addLayout(mainLayout);
     layout->addSpacing(10);
+}
+
+void BottomWidget::handleStateChanged(QMediaPlayer::State status)
+{
+    if (status == QMediaPlayer::PlayingState) {
+        m_playButton->setNormalPic(":/images/pause-normal.svg");
+        m_playButton->setHoverPic(":/images/pause-hover.svg");
+        m_playButton->setPressPic(":/images/pause-press.svg");
+    } else {
+        m_playButton->setNormalPic(":/images/play-normal.svg");
+        m_playButton->setHoverPic(":/images/play-hover.svg");
+        m_playButton->setPressPic(":/images/play-press.svg");
+    }
+}
+
+void BottomWidget::handleDurationChanged(qint64 duration)
+{
+    QTime time(0, 0, 0);
+    time = time.addMSecs(duration);
+
+    m_songSlider->setRange(0, duration);
+    m_duration = time.toString("mm:ss");
+    m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
+}
+
+void BottomWidget::handlePositionChanged(qint64 position)
+{
+    QTime time(0, 0, 0);
+    time = time.addMSecs(position);
+
+    m_songSlider->setValue(position);
+    m_position = time.toString("mm:ss");
+    m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
+}
+
+void BottomWidget::playButtonClicked()
+{
+    if (m_player->state() == QMediaPlayer::PlayingState)
+        m_player->pause();
+    else
+        m_player->play();
 }
 
 void BottomWidget::paintEvent(QPaintEvent *)

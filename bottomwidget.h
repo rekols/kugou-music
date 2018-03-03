@@ -23,14 +23,17 @@ public:
 
 private:
     void initUI();
-
+    void handleStateChanged(QMediaPlayer::State status);
+    void handleDurationChanged(qint64 duration);
+    void handlePositionChanged(qint64 position);
+    void playButtonClicked();
+    
 protected:
     void paintEvent(QPaintEvent *);
 
 private:
     DImageButton *m_previousButton;
     DImageButton *m_playButton;
-    DImageButton *m_pauseButton;
     DImageButton *m_nextButton;
     QSvgWidget *m_coverWidget;
     QLabel *m_songLabel;
