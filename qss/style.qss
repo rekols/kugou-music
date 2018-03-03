@@ -1,5 +1,5 @@
 QSlider::add-page:Horizontal {
-    background-color: #ECECEC;
+    background-color: #FAFAFA;
 }
 QSlider::sub-page:Horizontal {
     background-color: #2CA7F8;

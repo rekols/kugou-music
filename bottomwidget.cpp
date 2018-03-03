@@ -7,7 +7,7 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     : QWidget(parent),
       m_player(p)
 {
-    setFixedHeight(70);
+    setFixedHeight(75);
     initUI();
 
     connect(m_player, &QMediaPlayer::stateChanged, this,
@@ -53,7 +53,7 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 
                 m_songSlider->setValue(position);
                 m_position = time.toString("mm:ss");
-                m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));    
+                m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
             });
 }
 
@@ -91,33 +91,39 @@ void BottomWidget::initUI()
     m_coverWidget->load(QString(":/images/info_cover.svg"));
 
     m_songSlider->setFixedHeight(5);
-    m_songLabel->setAlignment(Qt::AlignLeft);
-    m_timeLabel->setAlignment(Qt::AlignRight);
     m_songSlider->setCursor(Qt::PointingHandCursor);
 
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setMargin(0);
+
+    QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    mainLayout->addSpacing(25);
+    // QFormLayout *songLayout = new QFormLayout;
+    // songLayout->addRow(m_songLabel, m_timeLabel);
+    // songLayout->setVerticalSpacing(10);
+    // songLayout->setContentsMargins(0, 15, 0, 15);
+
+    QVBoxLayout *songLayout = new QVBoxLayout;
+    songLayout->addWidget(m_songLabel);
+    songLayout->addWidget(m_timeLabel);
+
+    mainLayout->addSpacing(20);
+    mainLayout->addWidget(m_coverWidget);
+    mainLayout->addLayout(songLayout);
+    mainLayout->addSpacing(30);
     mainLayout->addWidget(m_previousButton);
     mainLayout->addSpacing(15);
     mainLayout->addWidget(m_playButton);
     mainLayout->addSpacing(15);
     mainLayout->addWidget(m_pauseButton);
     mainLayout->addWidget(m_nextButton);
-    mainLayout->addSpacing(30);
-    mainLayout->addWidget(m_coverWidget);
     mainLayout->addSpacing(20);
 
-    QFormLayout *songLayout = new QFormLayout;
-    songLayout->addRow(m_songLabel, m_timeLabel);
-    songLayout->addRow(m_songSlider);
-    songLayout->setVerticalSpacing(10);
-    songLayout->setContentsMargins(0, 15, 0, 15);
-
-    mainLayout->addLayout(songLayout);
-    mainLayout->addSpacing(20);
+    layout->addWidget(m_songSlider);
+    layout->addLayout(mainLayout);
+    layout->addSpacing(10);
 }
 
 void BottomWidget::paintEvent(QPaintEvent *)
