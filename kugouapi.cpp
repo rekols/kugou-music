@@ -82,7 +82,7 @@ void KugouAPI::handleSearchFinished()
         QJsonObject object = doc.object();
         data->url = object.value("url").toString();
 
-        data->imgUrl = object.value("imgUrl").toString();
+        data->imgUrl = object.value("album_img").toString();
         data->imgUrl = data->imgUrl.replace("{size}", "100");
 
         qint64 length = object.value("timeLength").toInt();
