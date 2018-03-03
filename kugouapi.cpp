@@ -31,6 +31,7 @@ KugouAPI::KugouAPI(QObject *parent)
 
 KugouAPI::~KugouAPI()
 {
+    delete m_networkManager;
 }
 
 void KugouAPI::search(const QString &keyword)
@@ -77,11 +78,12 @@ void KugouAPI::handleSearchFinished()
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
-        qDebug() << url.toString();
-
         QJsonDocument doc = QJsonDocument::fromJson(QByteArray(reply->readAll()));
         QJsonObject object = doc.object();
         data->url = object.value("url").toString();
+
+        data->imgUrl = object.value("imgUrl").toString();
+        data->imgUrl = data->imgUrl.replace("{size}", "100");
 
         qint64 length = object.value("timeLength").toInt();
         QTime time(0, 0, 0);

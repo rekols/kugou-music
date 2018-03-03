@@ -1,12 +1,20 @@
 #include "bottomwidget.h"
+#include "dsvgrenderer.h"
 #include <QPainter>
 #include <QFormLayout>
 #include <QTime>
 
+DWIDGET_USE_NAMESPACE
+
 BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     : QWidget(parent),
+      m_networkManager(new QNetworkAccessManager(this)),
       m_player(p)
 {
+    const auto ratio = devicePixelRatioF();
+    m_coverPixmap = DSvgRenderer::render(":/images/info_cover.svg", QSize(50, 50) * ratio);
+    m_coverPixmap.setDevicePixelRatio(ratio);
+
     setFixedHeight(75);
     initUI();
 
@@ -24,6 +32,19 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 void BottomWidget::updateData(MusicData *data)
 {
     m_songLabel->setText(data->songName + " - " + data->signerName);
+    m_coverWidget->setPixmap(m_coverPixmap);
+
+    // load conver image.
+    QEventLoop loop;
+    QUrl url(data->imgUrl);
+    QNetworkRequest request(url);
+    QNetworkReply *reply = m_networkManager->get(request);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    QPixmap pixmap;
+    pixmap.loadFromData(reply->readAll());
+    m_coverWidget->setPixmap(pixmap.scaled(50, 50));
 }
 
 void BottomWidget::initUI()
@@ -37,7 +58,7 @@ void BottomWidget::initUI()
     m_nextButton = new DImageButton(":/images/next-normal.svg",
                                     ":/images/next-hover.svg",
                                     ":/images/next-press.svg");
-    m_coverWidget = new QSvgWidget;
+    m_coverWidget = new QLabel;
     m_songLabel = new QLabel;
     m_timeLabel = new QLabel;
     m_songSlider = new QSlider(Qt::Horizontal);
@@ -47,7 +68,7 @@ void BottomWidget::initUI()
     m_nextButton->setFixedSize(30, 30);
 
     m_coverWidget->setFixedSize(50, 50);
-    m_coverWidget->load(QString(":/images/info_cover.svg"));
+    m_coverWidget->setPixmap(m_coverPixmap);
 
     m_songSlider->setFixedHeight(5);
     m_songSlider->setCursor(Qt::PointingHandCursor);

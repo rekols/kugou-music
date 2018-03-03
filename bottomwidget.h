@@ -7,6 +7,11 @@
 #include <QSvgWidget>
 #include <QSlider>
 #include <QMediaPlayer>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QEventLoop>
+#include <QUrl>
 #include "dimagebutton.h"
 #include "musicdata.h"
 
@@ -27,21 +32,24 @@ private:
     void handleDurationChanged(qint64 duration);
     void handlePositionChanged(qint64 position);
     void playButtonClicked();
-    
+
 protected:
     void paintEvent(QPaintEvent *);
 
 private:
+    QNetworkAccessManager *m_networkManager;
     DImageButton *m_previousButton;
     DImageButton *m_playButton;
     DImageButton *m_nextButton;
-    QSvgWidget *m_coverWidget;
+    QLabel *m_coverWidget;
     QLabel *m_songLabel;
     QLabel *m_timeLabel;
     QString m_duration;
     QString m_position;
     QSlider *m_songSlider;
     QMediaPlayer *m_player;
+
+    QPixmap m_coverPixmap;
 };
 
 #endif // BOTTOMWIDGET_H
