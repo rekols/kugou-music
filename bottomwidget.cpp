@@ -92,6 +92,8 @@ void BottomWidget::initUI()
 
     m_songSlider->setFixedHeight(5);
     m_songSlider->setCursor(Qt::PointingHandCursor);
+    m_songLabel->setFixedWidth(250);
+    m_timeLabel->setFixedWidth(250);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
@@ -100,26 +102,22 @@ void BottomWidget::initUI()
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    // QFormLayout *songLayout = new QFormLayout;
-    // songLayout->addRow(m_songLabel, m_timeLabel);
-    // songLayout->setVerticalSpacing(10);
-    // songLayout->setContentsMargins(0, 15, 0, 15);
-
     QVBoxLayout *songLayout = new QVBoxLayout;
     songLayout->addWidget(m_songLabel);
     songLayout->addWidget(m_timeLabel);
 
-    mainLayout->addSpacing(20);
+    mainLayout->addSpacing(15);
     mainLayout->addWidget(m_coverWidget);
+    mainLayout->addSpacing(15);
     mainLayout->addLayout(songLayout);
     mainLayout->addSpacing(30);
     mainLayout->addWidget(m_previousButton);
-    mainLayout->addSpacing(15);
-    mainLayout->addWidget(m_playButton);
-    mainLayout->addSpacing(15);
-    mainLayout->addWidget(m_pauseButton);
-    mainLayout->addWidget(m_nextButton);
     mainLayout->addSpacing(20);
+    mainLayout->addWidget(m_playButton);
+    mainLayout->addSpacing(20);
+    mainLayout->addWidget(m_nextButton);
+    mainLayout->addSpacing(30);
+    mainLayout->addStretch();
 
     layout->addWidget(m_songSlider);
     layout->addLayout(mainLayout);
@@ -133,4 +131,6 @@ void BottomWidget::paintEvent(QPaintEvent *)
 
     painter.setPen(QColor("#EAEAEA"));
     painter.drawLine(QPoint(0, 0), QPoint(rect().width(), 0));
+    // painter.setPen(QColor("#FBFBFB"));
+    // painter.drawLine(QPoint(0, 6), QPoint(rect().width(), 6));
 }
