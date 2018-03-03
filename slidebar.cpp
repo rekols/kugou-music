@@ -42,10 +42,11 @@ void SlideBar::paintEvent(QPaintEvent *e)
 
         if (isSelected) {
             painter.setPen(QColor(44, 167, 248));
+            painter.setPen(QColor("#0C8ED9"));
             painter.fillPath(itemPath, QColor(44, 167, 248, 255 * 0.15));
 
             QPainterPath sepPath;
-            sepPath.addRect(rect().width() - 5, count * m_rowHeight, 5, m_rowHeight);
+            sepPath.addRect(0, count * m_rowHeight, 5, m_rowHeight);
             painter.fillPath(sepPath, QColor(44, 167, 248));
 
             QPainterPath topSepPath;
