@@ -77,9 +77,9 @@ void MainWindow::handleDoubleClicked(const QModelIndex &index)
 {
     const int row = index.row();
 
-    const QString url = m_musicList.at(row)->url;
-    m_player->setMedia(QUrl(url));
-    m_player->play();
+    // const QString url = m_musicList.at(row)->url;
+    // m_player->setMedia(QUrl(url));
+    // m_player->play();
 
     m_bottomWidget->updateData(m_musicList.at(row));
 }

@@ -19,6 +19,7 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     initUI();
 
     connect(m_player, &QMediaPlayer::stateChanged, this, &BottomWidget::handleStateChanged);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &BottomWidget::handleMediaStatusChanged);
     connect(m_playButton, &DImageButton::clicked, this, &BottomWidget::playButtonClicked);
     connect(m_player, &QMediaPlayer::durationChanged, this, &BottomWidget::handleDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged, this, &BottomWidget::handlePositionChanged);
@@ -31,8 +32,9 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 
 void BottomWidget::updateData(MusicData *data)
 {
-    m_songLabel->setText(data->songName + " - " + data->signerName);
+    m_musicData = data;
     m_coverWidget->setPixmap(m_coverPixmap);
+    m_player->setMedia(QUrl(data->url));
 
     // load conver image.
     QEventLoop loop;
@@ -65,6 +67,8 @@ void BottomWidget::initUI()
     m_songLabel = new QLabel;
     m_timeLabel = new QLabel;
     m_songSlider = new QSlider(Qt::Horizontal);
+
+    m_timeLabel->hide();
 
     m_previousButton->setFixedSize(30, 30);
     m_playButton->setFixedSize(30, 30);
@@ -117,6 +121,28 @@ void BottomWidget::handleStateChanged(QMediaPlayer::State status)
         m_playButton->setNormalPic(":/images/play-normal.svg");
         m_playButton->setHoverPic(":/images/play-hover.svg");
         m_playButton->setPressPic(":/images/play-press.svg");
+    }
+}
+
+void BottomWidget::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
+{
+    switch (status) {
+    case QMediaPlayer::LoadingMedia:
+        m_songLabel->setText("加载中...");
+        break;
+
+    case QMediaPlayer::EndOfMedia:
+        m_songSlider->setValue(0);
+        break;
+
+    case QMediaPlayer::LoadedMedia:
+        m_songLabel->setText(m_musicData->songName + " - " + m_musicData->signerName);
+        m_player->play();
+        m_timeLabel->show();
+        break;
+
+    case QMediaPlayer::BufferedMedia:
+        break;
     }
 }
 

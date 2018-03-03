@@ -29,6 +29,7 @@ public:
 private:
     void initUI();
     void handleStateChanged(QMediaPlayer::State status);
+    void handleMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void handleDurationChanged(qint64 duration);
     void handlePositionChanged(qint64 position);
     void playButtonClicked();
@@ -48,6 +49,7 @@ private:
     QString m_position;
     QSlider *m_songSlider;
     QMediaPlayer *m_player;
+    MusicData *m_musicData;
 
     QPixmap m_coverPixmap;
 };

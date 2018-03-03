@@ -31,7 +31,7 @@ void SlideBar::paintEvent(QPaintEvent *e)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor("#F9F9F9"));
+    painter.setBrush(QColor("#FAFAFA"));
     painter.drawRect(rect());
 
     int count = 0;
