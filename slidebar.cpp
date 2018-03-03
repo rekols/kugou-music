@@ -1,3 +1,4 @@
+
 #include "slidebar.h"
 #include <QPainter>
 #include <QMouseEvent>
@@ -44,7 +45,7 @@ void SlideBar::paintEvent(QPaintEvent *e)
             painter.fillPath(itemPath, QColor(44, 167, 248, 255 * 0.15));
 
             QPainterPath sepPath;
-            sepPath.addRect(rect().width() - 4, count * m_rowHeight, 4, m_rowHeight);
+            sepPath.addRect(rect().width() - 5, count * m_rowHeight, 5, m_rowHeight);
             painter.fillPath(sepPath, QColor(44, 167, 248));
 
             QPainterPath topSepPath;

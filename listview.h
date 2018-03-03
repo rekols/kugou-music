@@ -42,7 +42,6 @@ signals:
 
 private:
     QStandardItemModel *m_itemModel;
-    QMenu *m_menu;
 };
 
 #endif

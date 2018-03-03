@@ -20,8 +20,8 @@ QTableView {
 
 QTableView::item:selected {
     border: 0px;
-    background: #2CA7F8;
-    color: #FFFFFF;
+    background: #D5EDFE;
+    color: #2CA7F8;
 }
 
 QHeaderView::section {

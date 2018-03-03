@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *topLayout = new QHBoxLayout;
     topLayout->setSpacing(0);
     topLayout->addWidget(m_leftSlideBar);
-    topLayout->addSpacing(2);
     topLayout->addWidget(m_listView);
 
     centralLayout->addLayout(topLayout);

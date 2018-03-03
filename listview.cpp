@@ -25,8 +25,7 @@
 
 ListView::ListView(QWidget *parent)
     : QTableView(parent),
-      m_itemModel(new QStandardItemModel),
-      m_menu(new QMenu(this))
+      m_itemModel(new QStandardItemModel)
 {
     init();
 }
@@ -50,8 +49,7 @@ void ListView::init()
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    // setContextMenuPolicy(Qt::CustomContentMenu);
-    setContextMenuPolicy( Qt::CustomContextMenu );
+    setContextMenuPolicy(Qt::CustomContextMenu);
 
     QHeaderView *hHeader = horizontalHeader();
     hHeader->setSectionResizeMode(0, QHeaderView::Stretch);

@@ -25,7 +25,6 @@ DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
     : DAbstractDialog(parent)
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
-
     setFixedSize(500, 300);
 
     DWindowCloseButton *closeButton = new DWindowCloseButton;
