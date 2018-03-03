@@ -12,6 +12,7 @@
 #include "listview.h"
 #include "kugouapi.h"
 #include "musicdata.h"
+#include "downloaddialog.h"
 
 DWIDGET_USE_NAMESPACE
 

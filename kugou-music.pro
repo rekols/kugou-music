@@ -18,7 +18,8 @@ HEADERS += bottomwidget.h \
 	   slidebar.h \
 	   titlebar.h \
 	   listview.h \
-	   musicdata.h
+	   musicdata.h \
+	   downloaddialog.h
 
 SOURCES += bottomwidget.cpp \
 	   kugouapi.cpp \
@@ -27,6 +28,7 @@ SOURCES += bottomwidget.cpp \
 	   searchpage.cpp \
 	   slidebar.cpp \
 	   titlebar.cpp \
-	   listview.cpp
+	   listview.cpp \
+	   downloaddialog.cpp
 
 RESOURCES += kugou-music.qrc

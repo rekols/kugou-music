@@ -20,10 +20,13 @@
 #include "listview.h"
 #include <QHeaderView>
 #include <QStandardItem>
+#include <QAction>
+#include <QDebug>
 
 ListView::ListView(QWidget *parent)
     : QTableView(parent),
-      m_itemModel(new QStandardItemModel)
+      m_itemModel(new QStandardItemModel),
+      m_menu(new QMenu(this))
 {
     init();
 }
@@ -47,6 +50,8 @@ void ListView::init()
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    // setContextMenuPolicy(Qt::CustomContentMenu);
+    setContextMenuPolicy( Qt::CustomContextMenu );
 
     QHeaderView *hHeader = horizontalHeader();
     hHeader->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -57,6 +62,19 @@ void ListView::init()
     setColumnWidth(0, 300);
     setColumnWidth(1, 100);
     setColumnWidth(2, 100);
+
+    connect(this, &QTableView::customContextMenuRequested, this,
+            [=] (QPoint point) {
+                QModelIndex index = indexAt(point);
+                QMenu menu(this);
+
+                QAction *downAction = menu.addAction("下载");
+                QAction *a = menu.exec(QCursor::pos());
+
+                if (a == downAction) {
+                    emit downloadActionPress(index.row());
+                }
+            });
 }
 
 void ListView::appendItem(MusicData *data)

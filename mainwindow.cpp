@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *topLayout = new QHBoxLayout;
     topLayout->setSpacing(0);
     topLayout->addWidget(m_leftSlideBar);
+    topLayout->addSpacing(2);
     topLayout->addWidget(m_listView);
 
     centralLayout->addLayout(topLayout);
@@ -41,6 +42,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_titlebar, &Titlebar::editReturnPressed, this, &MainWindow::handleReturnPressed);
     connect(m_kugouAPI, &KugouAPI::searchFinished, this, &MainWindow::handleSearchFinished);
     connect(m_listView, &ListView::doubleClicked, this, &MainWindow::handleDoubleClicked);
+    connect(m_listView, &ListView::downloadActionPress, this,
+            [=] (const int &index) {
+                if (!m_musicList.isEmpty()) {
+                    MusicData *data = m_musicList.at(index);
+                    DownloadDialog *dlg = new DownloadDialog(data, this);
+                    dlg->show();
+                }
+            });
 }
 
 MainWindow::~MainWindow()

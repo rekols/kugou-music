@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 ~ 2017 Deepin Technology Co., Ltd.
+ * Copyright (C) 2017 ~ 2018 Deepin Technology Co., Ltd.
  *
  * Author:     rekols <rekols@foxmail.com>
  *
@@ -17,32 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LISTVIEW_H
-#define LISTVIEW_H
+#ifndef DOWNLOADDIALOG_H
+#define DOWNLOADDIALOG_H
 
-#include <QTableView>
-#include <QStandardItemModel>
-#include <QMenu>
+#include "dabstractdialog.h"
 #include "musicdata.h"
+#include <QPushButton>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QFormLayout>
 
-class ListView : public QTableView
+DWIDGET_USE_NAMESPACE
+
+class DownloadDialog : public DAbstractDialog
 {
     Q_OBJECT
-    
+
 public:
-    ListView(QWidget *parent = nullptr);
-    ~ListView();
-
-    void init();
-    void appendItem(MusicData *data);
-    QStandardItemModel *getModel() { return m_itemModel; };
-
-signals:
-    void downloadActionPress(const int &index);
-
-private:
-    QStandardItemModel *m_itemModel;
-    QMenu *m_menu;
+    DownloadDialog(MusicData *data, QWidget *parent = nullptr);
+    ~DownloadDialog();
 };
 
 #endif
