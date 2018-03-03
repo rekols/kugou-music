@@ -19,7 +19,10 @@
 
 #include "downloaddialog.h"
 #include "dwindowclosebutton.h"
-#include <QPlainTextEdit>
+#include <QApplication>
+#include <QPushButton>
+#include <QClipboard>
+#include "dtoast.h"
 
 DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
     : DAbstractDialog(parent)
@@ -34,24 +37,35 @@ DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(closeButton, 0, Qt::AlignTop | Qt::AlignRight);
 
-    QPlainTextEdit *urlEdit = new QPlainTextEdit;
-    urlEdit->setReadOnly(true);
-    urlEdit->setPlainText(data->url);
-    urlEdit->setStyleSheet("QPlainTextEdit { border: 1px solid #eee; border-radius: 4px; background: #FAFAFA; }");
-
-    QLabel *tips = new QLabel("请自行复制链接下载！");
-    tips->setStyleSheet("QLabel { color: #2ca7f8; }");
+    QPushButton *btn1 = new QPushButton("复制下载链接");
+    QPushButton *btn2 = new QPushButton("复制下载链接");
+    btn1->setObjectName("BlueButton");
+    btn2->setObjectName("BlueButton");
+    btn1->setFixedWidth(150);
+    btn2->setFixedWidth(150);
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow(new QLabel("名称："), new QLabel(data->songName));
     formLayout->addRow(new QLabel("歌手："), new QLabel(data->signerName));
     formLayout->addRow(new QLabel("时长："), new QLabel(data->timeLength));
-    layout->addLayout(formLayout);
-    layout->addWidget(urlEdit);
+    formLayout->addRow(new QLabel("128kbps："), btn1);
+    formLayout->addRow(new QLabel("320kbps："), btn2);
+    formLayout->setVerticalSpacing(12);
+    formLayout->setContentsMargins(30, 0, 30, 10);
     layout->addSpacing(10);
-    layout->addWidget(tips, 0, Qt::AlignHCenter);
+    layout->addLayout(formLayout);
+    layout->addStretch();
 
-    layout->setContentsMargins(20, 10, 10, 20);
+    connect(btn1, &QPushButton::clicked, this,
+            [=] {
+                QApplication::clipboard()->setText(data->url);
+
+                DToast *toast = new DToast(this);
+                toast->setText("复制成功");
+                toast->setFixedHeight(40);
+                toast->pop();
+                toast->move((width() - toast->width()) / 2, (height() - 60));
+            });
 }
 
 DownloadDialog::~DownloadDialog()

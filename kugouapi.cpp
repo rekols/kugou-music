@@ -77,6 +77,8 @@ void KugouAPI::handleSearchFinished()
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
+        qDebug() << url.toString();
+
         QJsonDocument doc = QJsonDocument::fromJson(QByteArray(reply->readAll()));
         QJsonObject object = doc.object();
         data->url = object.value("url").toString();
