@@ -37,7 +37,7 @@ ListView::~ListView()
 void ListView::init()
 {
     QStringList titles;
-    titles << "音乐标题" << "歌手" << "时长";
+    titles << "" << "音乐标题" << "歌手" << "时长";
 
     m_itemModel->setHorizontalHeaderLabels(titles);
     setModel(m_itemModel);
@@ -52,14 +52,16 @@ void ListView::init()
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     QHeaderView *hHeader = horizontalHeader();
-    hHeader->setSectionResizeMode(0, QHeaderView::Stretch);
+    hHeader->setSectionResizeMode(0, QHeaderView::Fixed);
     hHeader->setSectionResizeMode(1, QHeaderView::Stretch);
-    hHeader->setSectionResizeMode(2, QHeaderView::Fixed);
+    hHeader->setSectionResizeMode(2, QHeaderView::Stretch);
+    hHeader->setSectionResizeMode(3, QHeaderView::Fixed);
     hHeader->setHighlightSections(false);
 
-    setColumnWidth(0, 300);
-    setColumnWidth(1, 100);
+    setColumnWidth(0, 50);
+    setColumnWidth(1, 300);
     setColumnWidth(2, 100);
+    setColumnWidth(3, 100);
 
     connect(this, &QTableView::customContextMenuRequested, this,
             [=] (QPoint point) {
@@ -81,12 +83,15 @@ void ListView::appendItem(MusicData *data)
     m_itemModel->insertRow(row);
     setRowHeight(row, 45);
 
+    QStandardItem *rowItem = new QStandardItem(QString::number(row));
+    m_itemModel->setItem(row, 0, rowItem);
+
     QStandardItem *nameItem = new QStandardItem(data->songName);
-    m_itemModel->setItem(row, 0, nameItem);
+    m_itemModel->setItem(row, 1, nameItem);
 
     QStandardItem *signerItem = new QStandardItem(data->signerName);
-    m_itemModel->setItem(row, 1, signerItem);
+    m_itemModel->setItem(row, 2, signerItem);
 
     QStandardItem *timeItem = new QStandardItem(data->timeLength);
-    m_itemModel->setItem(row, 2, timeItem);
+    m_itemModel->setItem(row, 3, timeItem);
 }

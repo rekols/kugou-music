@@ -28,6 +28,7 @@ private slots:
     void handleReturnPressed(const QString &);
     void handleSearchFinished(MusicData *);
     void handleDoubleClicked(const QModelIndex &);
+    void handleDownloadActionClicked(const int &index);
 
 private:
     Titlebar *m_titlebar;

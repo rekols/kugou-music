@@ -41,14 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_titlebar, &Titlebar::editReturnPressed, this, &MainWindow::handleReturnPressed);
     connect(m_kugouAPI, &KugouAPI::searchFinished, this, &MainWindow::handleSearchFinished);
     connect(m_listView, &ListView::doubleClicked, this, &MainWindow::handleDoubleClicked);
-    connect(m_listView, &ListView::downloadActionPress, this,
-            [=] (const int &index) {
-                if (!m_musicList.isEmpty()) {
-                    MusicData *data = m_musicList.at(index);
-                    DownloadDialog *dlg = new DownloadDialog(data, this);
-                    dlg->show();
-                }
-            });
+    connect(m_listView, &ListView::downloadActionPress, this, &MainWindow::handleDownloadActionClicked);
 }
 
 MainWindow::~MainWindow()
@@ -89,4 +82,13 @@ void MainWindow::handleDoubleClicked(const QModelIndex &index)
     m_player->play();
 
     m_bottomWidget->updateData(m_musicList.at(row));
+}
+
+void MainWindow::handleDownloadActionClicked(const int &index)
+{
+    if (!m_musicList.isEmpty()) {
+        MusicData *data = m_musicList.at(index);
+        DownloadDialog *dlg = new DownloadDialog(data, this);
+        dlg->show();
+    }    
 }

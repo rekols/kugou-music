@@ -40,7 +40,7 @@ void KugouAPI::search(const QString &keyword)
     query.addQueryItem("format", "json");
     query.addQueryItem("keyword", keyword);
     query.addQueryItem("page", "1");
-    query.addQueryItem("pagesize", "200");
+    query.addQueryItem("pagesize", "500");
     query.addQueryItem("showtype", "1");
     url.setQuery(query.toString(QUrl::FullyEncoded));
 
