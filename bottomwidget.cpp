@@ -42,9 +42,12 @@ void BottomWidget::updateData(MusicData *data)
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
-    QPixmap pixmap;
-    pixmap.loadFromData(reply->readAll());
-    m_coverWidget->setPixmap(pixmap.scaled(50, 50));
+    QByteArray imgData = reply->readAll();
+    if (!imgData.isEmpty()) {
+        QPixmap pixmap;
+        pixmap.loadFromData(imgData);
+        m_coverWidget->setPixmap(pixmap.scaled(50, 50));
+    }
 }
 
 void BottomWidget::initUI()
