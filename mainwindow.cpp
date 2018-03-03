@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setFocusPolicy(Qt::ClickFocus);
     setCentralWidget(centralWidget);
-    setMinimumSize(900, 600);
+    setMinimumSize(900, 610);
 
     connect(m_titlebar, &Titlebar::editReturnPressed, this, &MainWindow::handleReturnPressed);
     connect(m_kugouAPI, &KugouAPI::searchFinished, this, &MainWindow::handleSearchFinished);
@@ -75,13 +75,7 @@ void MainWindow::handleSearchFinished(MusicData *data)
 
 void MainWindow::handleDoubleClicked(const QModelIndex &index)
 {
-    const int row = index.row();
-
-    // const QString url = m_musicList.at(row)->url;
-    // m_player->setMedia(QUrl(url));
-    // m_player->play();
-
-    m_bottomWidget->updateData(m_musicList.at(row));
+    m_bottomWidget->updateData(m_musicList.at(index.row()));
 }
 
 void MainWindow::handleDownloadActionClicked(const int &index)
