@@ -88,8 +88,8 @@ void ListView::appendItem(MusicData *data)
     QStandardItem *nameItem = new QStandardItem(data->songName);
     m_itemModel->setItem(row, 1, nameItem);
 
-    QStandardItem *signerItem = new QStandardItem(data->signerName);
-    m_itemModel->setItem(row, 2, signerItem);
+    QStandardItem *singerItem = new QStandardItem(data->singerName);
+    m_itemModel->setItem(row, 2, singerItem);
 
     QStandardItem *timeItem = new QStandardItem(data->timeLength);
     m_itemModel->setItem(row, 3, timeItem);

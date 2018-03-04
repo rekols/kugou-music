@@ -23,7 +23,7 @@
 struct MusicData
 {
     QString songName;
-    QString signerName;
+    QString singerName;
     QString songHash;
     QString timeLength;
     QString imgUrl;

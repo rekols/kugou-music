@@ -46,7 +46,7 @@ DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow(new QLabel("名称："), new QLabel(data->songName));
-    formLayout->addRow(new QLabel("歌手："), new QLabel(data->signerName));
+    formLayout->addRow(new QLabel("歌手："), new QLabel(data->singerName));
     formLayout->addRow(new QLabel("时长："), new QLabel(data->timeLength));
     formLayout->addRow(new QLabel("128kbps："), btn1);
     formLayout->addRow(new QLabel("320kbps："), btn2);

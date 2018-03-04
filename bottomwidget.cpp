@@ -80,8 +80,8 @@ void BottomWidget::initUI()
 
     m_songSlider->setFixedHeight(5);
     m_songSlider->setCursor(Qt::PointingHandCursor);
-    m_songLabel->setFixedWidth(250);
-    m_timeLabel->setFixedWidth(250);
+    m_songLabel->setFixedWidth(200);
+    m_timeLabel->setFixedWidth(200);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
@@ -91,21 +91,24 @@ void BottomWidget::initUI()
     mainLayout->setSpacing(0);
 
     QVBoxLayout *songLayout = new QVBoxLayout;
+    songLayout->addStretch();
     songLayout->addWidget(m_songLabel);
     songLayout->addWidget(m_timeLabel);
+    songLayout->addStretch();
 
     mainLayout->addSpacing(15);
     mainLayout->addWidget(m_coverWidget);
     mainLayout->addSpacing(15);
     mainLayout->addLayout(songLayout);
-    mainLayout->addSpacing(30);
+    mainLayout->addStretch();
     mainLayout->addWidget(m_previousButton);
     mainLayout->addSpacing(20);
     mainLayout->addWidget(m_playButton);
     mainLayout->addSpacing(20);
     mainLayout->addWidget(m_nextButton);
-    mainLayout->addSpacing(30);
     mainLayout->addStretch();
+    mainLayout->addStretch();
+
 
     layout->addWidget(m_songSlider);
     layout->addLayout(mainLayout);
@@ -130,14 +133,18 @@ void BottomWidget::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
     switch (status) {
     case QMediaPlayer::LoadingMedia:
         m_songLabel->setText("加载中...");
-        break;
-
-    case QMediaPlayer::EndOfMedia:
         m_songSlider->setValue(0);
         break;
 
+    case QMediaPlayer::EndOfMedia:
+        m_player->play();
+        m_songSlider->setValue(0);
+    break;
+
     case QMediaPlayer::LoadedMedia: case QMediaPlayer::BufferedMedia:
-        m_songLabel->setText(m_musicData->songName + " - " + m_musicData->signerName);
+        QFontMetrics fm(m_songLabel->font());
+        const QString text = m_musicData->songName + " - " + m_musicData->singerName;
+        m_songLabel->setText(fm.elidedText(text, Qt::ElideRight, 195));
         m_player->play();
         m_timeLabel->show();
         break;

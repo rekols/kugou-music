@@ -67,7 +67,7 @@ void KugouAPI::handleSearchFinished()
         QJsonObject currentObject = info.at(i).toObject();
         MusicData *data = new MusicData;
         data->songName = currentObject.value("songname").toString();
-        data->signerName = currentObject.value("singername").toString();
+        data->singerName = currentObject.value("singername").toString();
         data->songHash = currentObject.value("hash").toString();
 
         QEventLoop loop;
