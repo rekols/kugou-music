@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QClipboard>
-#include "dtoast.h"
+// #include "dtoast.h"
 
 DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
     : DAbstractDialog(parent)
@@ -60,11 +60,11 @@ DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
             [=] {
                 QApplication::clipboard()->setText(data->url);
 
-                DToast *toast = new DToast(this);
-                toast->setText("复制成功");
-                toast->setFixedHeight(40);
-                toast->pop();
-                toast->move((width() - toast->width()) / 2, (height() - 60));
+                // DToast *toast = new DToast(this);
+                // toast->setText("复制成功");
+                // toast->setFixedHeight(40);
+                // toast->pop();
+                // toast->move((width() - toast->width()) / 2, (height() - 60));
             });
 }
 
