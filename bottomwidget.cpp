@@ -136,13 +136,10 @@ void BottomWidget::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
         m_songSlider->setValue(0);
         break;
 
-    case QMediaPlayer::LoadedMedia:
+    case QMediaPlayer::LoadedMedia: case QMediaPlayer::BufferedMedia:
         m_songLabel->setText(m_musicData->songName + " - " + m_musicData->signerName);
         m_player->play();
         m_timeLabel->show();
-        break;
-
-    case QMediaPlayer::BufferedMedia:
         break;
     }
 }
