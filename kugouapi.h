@@ -48,7 +48,7 @@ private slots:
     void handleSearchFinished();
 
 private:
-    QNetworkAccessManager *m_networkManager;
+    QNetworkAccessManager *m_manager;
 };
 
 #endif

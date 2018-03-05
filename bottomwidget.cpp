@@ -34,6 +34,7 @@ void BottomWidget::updateData(MusicData *data)
 {
     m_musicData = data;
     m_coverWidget->setPixmap(m_coverPixmap);
+    m_player->setMedia(QUrl(data->url));
 
     // load conver image.
     QEventLoop loop;
@@ -43,14 +44,15 @@ void BottomWidget::updateData(MusicData *data)
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
-    QByteArray imgData = reply->readAll();
-    if (!imgData.isEmpty()) {
-        QPixmap pixmap;
-        pixmap.loadFromData(imgData);
-        m_coverWidget->setPixmap(pixmap.scaled(50, 50));
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray imgData = reply->readAll();
+        if (!imgData.isEmpty()) {
+            QPixmap pixmap;
+            pixmap.loadFromData(imgData);
+            m_coverWidget->setPixmap(pixmap.scaled(50, 50));
+        
+        }
     }
-
-    m_player->setMedia(QUrl(data->url));
 }
 
 void BottomWidget::initUI()

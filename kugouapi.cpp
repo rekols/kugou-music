@@ -24,14 +24,13 @@
 
 KugouAPI::KugouAPI(QObject *parent)
     : QObject(parent),
-      m_networkManager(new QNetworkAccessManager(this))
+      m_manager(new QNetworkAccessManager(this))
 {
 
 }
 
 KugouAPI::~KugouAPI()
 {
-    delete m_networkManager;
 }
 
 void KugouAPI::search(const QString &keyword)
@@ -46,7 +45,7 @@ void KugouAPI::search(const QString &keyword)
     url.setQuery(query.toString(QUrl::FullyEncoded));
 
     QNetworkRequest request(url);
-    QNetworkReply *reply = m_networkManager->get(request);
+    QNetworkReply *reply = m_manager->get(request);
     connect(reply, &QNetworkReply::finished, this, &KugouAPI::handleSearchFinished);
 }
 
@@ -70,26 +69,28 @@ void KugouAPI::handleSearchFinished()
         data->singerName = currentObject.value("singername").toString();
         data->songHash = currentObject.value("hash").toString();
 
-        QEventLoop loop;
-        // http://www.kugou.com/yy/index.php?r=play/getdata&hash=%1
         QUrl url(QString("http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=%1").arg(data->songHash));
         QNetworkRequest request(url);
-        QNetworkReply *reply = m_networkManager->get(request);
+        QNetworkReply *reply = m_manager->get(request);
+        QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
-        QJsonDocument doc = QJsonDocument::fromJson(QByteArray(reply->readAll()));
-        QJsonObject object = doc.object();
-        data->url = object.value("url").toString();
+        if (reply->error() == QNetworkReply::NoError) {
+            QJsonDocument doc = QJsonDocument::fromJson(QByteArray(reply->readAll()));
+            QJsonObject object = doc.object();
+            data->url = object.value("url").toString();
 
-        data->imgUrl = object.value("album_img").toString();
-        data->imgUrl = data->imgUrl.replace("{size}", "100");
+            data->imgUrl = object.value("album_img").toString();
+            data->imgUrl = data->imgUrl.replace("{size}", "100");
 
-        qint64 length = object.value("timeLength").toInt();
-        QTime time(0, 0, 0);
-        time = time.addSecs(length);
-        data->timeLength = time.toString("mm:ss");
+            qint64 length = object.value("timeLength").toInt();
+            QTime time(0, 0, 0);
+            time = time.addSecs(length);
+            data->timeLength = time.toString("mm:ss");
 
-        emit searchFinished(data);
+            emit searchFinished(data);
+        }
+        reply->deleteLater();
     }
 }
