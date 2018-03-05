@@ -1,29 +1,43 @@
 #ifndef SLIDEBAR_H
 #define SLIDEBAR_H
 
-#include <QWidget>
+#include <QFrame>
+#include <QVBoxLayout>
+#include <QButtonGroup>
+#include <QPushButton>
+#include <QLabel>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QEventLoop>
+#include <QUrl>
+#include "musicdata.h"
 
-class SlideBar : public QWidget
+class SlideBar : public QFrame
 {
     Q_OBJECT
 
 public:
     explicit SlideBar(QWidget *parent = nullptr);
 
-    void addItem(const QString &text);
+    void updateData(MusicData *);
 
 signals:
-    void currentIndexChanged(const QString &key);
-
-protected:
-    void paintEvent(QPaintEvent *);
-    void mouseMoveEvent(QMouseEvent *);
-    void mousePressEvent(QMouseEvent *);
+    void currentIndexChanged(int);
 
 private:
-    int m_rowHeight;
-    int m_currentIndex;
-    QStringList m_listItems;
+    void initUI();
+
+private:
+    QNetworkAccessManager *m_networkManager;
+    QVBoxLayout *m_layout;
+    QButtonGroup *m_buttonGroup;
+    QStringList m_titleList;
+
+    QPixmap m_coverPixmap;
+    QLabel *m_coverLabel;
+    QLabel *m_songLabel;
+    QLabel *m_singerLabel;
 };
 
 #endif // SLIDEBAR_H

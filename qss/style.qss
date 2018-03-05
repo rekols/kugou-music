@@ -4,7 +4,6 @@
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FFFFFF, stop:1 #FBFBFB);
     border-color: rgba(0, 131, 255, 0.4);
     border-radius: 4;
-    border-style: solid;
     border-width: 1;
     outline: none;
     padding: 3px 24px 4px 24px;
@@ -24,24 +23,10 @@
     border-color: rgba(29, 129, 255, 0.3);
 }
 
-
-QSlider::add-page:Horizontal {
-    background-color: rgba(0, 0, 0, 0.04);
-}
-QSlider::sub-page:Horizontal {
-    background-color: #2CA7F8;
-}
-QSlider::groove:Horizontal {
-    background: transparent;
-}
-QSlider::handle:Horizontal {
-    height: 30px;
-    width: 8px;
-}
-
 QTableView {
     alternate-background-color: #FAFAFA;
     margin: 0px;
+    border: none;
 }
 
 QTableView::item:selected {

@@ -8,15 +8,70 @@ DWIDGET_USE_NAMESPACE
 
 BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     : QWidget(parent),
-      m_networkManager(new QNetworkAccessManager(this)),
       m_player(p)
 {
-    const auto ratio = devicePixelRatioF();
-    m_coverPixmap = DSvgRenderer::render(":/images/info_cover.svg", QSize(50, 50) * ratio);
-    m_coverPixmap.setDevicePixelRatio(ratio);
+    m_previousButton = new DImageButton(":/images/previous-normal.svg",
+                                        ":/images/previous-hover.svg",
+                                        ":/images/previous-press.svg");
+    m_playButton = new DImageButton(":/images/play-normal.svg",
+                                    ":/images/play-hover.svg",
+                                    ":/images/play-press.svg");
+    m_nextButton = new DImageButton(":/images/next-normal.svg",
+                                    ":/images/next-hover.svg",
+                                    ":/images/next-press.svg");
+    m_volumeButton = new DImageButton(":/images/audio-volume-high-normal.svg",
+                                      ":/images/audio-volume-high-hover.svg",
+                                      ":/images/audio-volume-high-press.svg");
+    m_songLabel = new QLabel;
+    m_timeLabel = new QLabel;
+    m_songSlider = new QSlider(Qt::Horizontal);
+    m_volumeSlider = new QSlider(Qt::Horizontal);
+    m_totalTimeLabel = new QLabel;
+    m_posTimeLabel = new QLabel;
 
-    setFixedHeight(75);
-    initUI();
+    m_volumeSlider->setFixedWidth(100);
+
+    m_totalTimeLabel->setFixedWidth(40);
+    m_posTimeLabel->setFixedWidth(40);
+
+    m_previousButton->setFixedSize(30, 30);
+    m_playButton->setFixedSize(30, 30);
+    m_nextButton->setFixedSize(30, 30);
+    m_volumeButton->setFixedSize(30, 30);
+
+    m_songSlider->setFixedHeight(25);
+    m_songSlider->setCursor(Qt::PointingHandCursor);
+    m_songLabel->setFixedWidth(200);
+    m_timeLabel->setFixedWidth(200);
+
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->setMargin(0);
+    mainLayout->setSpacing(0);
+
+    QVBoxLayout *songLayout = new QVBoxLayout;
+    songLayout->addStretch();
+    songLayout->addWidget(m_songLabel);
+    songLayout->addWidget(m_timeLabel);
+    songLayout->addStretch();
+
+    mainLayout->addSpacing(25);
+    mainLayout->addWidget(m_previousButton);
+    mainLayout->addSpacing(15);
+    mainLayout->addWidget(m_playButton);
+    mainLayout->addSpacing(15);
+    mainLayout->addWidget(m_nextButton);
+    mainLayout->addSpacing(60);
+    mainLayout->addWidget(m_posTimeLabel);
+    mainLayout->addSpacing(5);
+    mainLayout->addWidget(m_songSlider);
+    mainLayout->addSpacing(5);
+    mainLayout->addWidget(m_totalTimeLabel);
+    mainLayout->addSpacing(10);
+    mainLayout->addWidget(m_volumeButton);
+    mainLayout->addSpacing(5);
+    mainLayout->addWidget(m_volumeSlider);
+    mainLayout->addSpacing(20);
+    setFixedHeight(65);
 
     connect(m_player, &QMediaPlayer::stateChanged, this, &BottomWidget::handleStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &BottomWidget::handleMediaStatusChanged);
@@ -33,88 +88,7 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 void BottomWidget::updateData(MusicData *data)
 {
     m_musicData = data;
-    m_coverWidget->setPixmap(m_coverPixmap);
     m_player->setMedia(QUrl(data->url));
-
-    // load conver image.
-    QEventLoop loop;
-    QUrl url(data->imgUrl);
-    QNetworkRequest request(url);
-    QNetworkReply *reply = m_networkManager->get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
-
-    if (reply->error() == QNetworkReply::NoError) {
-        QByteArray imgData = reply->readAll();
-        if (!imgData.isEmpty()) {
-            QPixmap pixmap;
-            pixmap.loadFromData(imgData);
-            m_coverWidget->setPixmap(pixmap.scaled(50, 50));
-        
-        }
-    }
-}
-
-void BottomWidget::initUI()
-{
-    m_previousButton = new DImageButton(":/images/previous-normal.svg",
-                                        ":/images/previous-hover.svg",
-                                        ":/images/previous-press.svg");
-    m_playButton = new DImageButton(":/images/play-normal.svg",
-                                    ":/images/play-hover.svg",
-                                    ":/images/play-press.svg");
-    m_nextButton = new DImageButton(":/images/next-normal.svg",
-                                    ":/images/next-hover.svg",
-                                    ":/images/next-press.svg");
-    m_coverWidget = new QLabel;
-    m_songLabel = new QLabel;
-    m_timeLabel = new QLabel;
-    m_songSlider = new QSlider(Qt::Horizontal);
-
-    m_timeLabel->hide();
-
-    m_previousButton->setFixedSize(30, 30);
-    m_playButton->setFixedSize(30, 30);
-    m_nextButton->setFixedSize(30, 30);
-
-    m_coverWidget->setFixedSize(50, 50);
-    m_coverWidget->setPixmap(m_coverPixmap);
-
-    m_songSlider->setFixedHeight(5);
-    m_songSlider->setCursor(Qt::PointingHandCursor);
-    m_songLabel->setFixedWidth(200);
-    m_timeLabel->setFixedWidth(200);
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setMargin(0);
-
-    QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(0);
-
-    QVBoxLayout *songLayout = new QVBoxLayout;
-    songLayout->addStretch();
-    songLayout->addWidget(m_songLabel);
-    songLayout->addWidget(m_timeLabel);
-    songLayout->addStretch();
-
-    mainLayout->addSpacing(15);
-    mainLayout->addWidget(m_coverWidget);
-    mainLayout->addSpacing(15);
-    mainLayout->addLayout(songLayout);
-    mainLayout->addStretch();
-    mainLayout->addWidget(m_previousButton);
-    mainLayout->addSpacing(20);
-    mainLayout->addWidget(m_playButton);
-    mainLayout->addSpacing(20);
-    mainLayout->addWidget(m_nextButton);
-    mainLayout->addStretch();
-    mainLayout->addStretch();
-
-
-    layout->addWidget(m_songSlider);
-    layout->addLayout(mainLayout);
-    layout->addSpacing(10);
 }
 
 void BottomWidget::handleStateChanged(QMediaPlayer::State status)
@@ -148,7 +122,7 @@ void BottomWidget::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
         const QString text = m_musicData->songName + " - " + m_musicData->singerName;
         m_songLabel->setText(fm.elidedText(text, Qt::ElideRight, 195));
         m_player->play();
-        m_timeLabel->show();
+        // m_timeLabel->show();
         break;
     }
 }
@@ -159,8 +133,7 @@ void BottomWidget::handleDurationChanged(qint64 duration)
     time = time.addMSecs(duration);
 
     m_songSlider->setRange(0, duration);
-    m_duration = time.toString("mm:ss");
-    m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
+    m_totalTimeLabel->setText(time.toString("mm:ss"));
 }
 
 void BottomWidget::handlePositionChanged(qint64 position)
@@ -169,8 +142,7 @@ void BottomWidget::handlePositionChanged(qint64 position)
     time = time.addMSecs(position);
 
     m_songSlider->setValue(position);
-    m_position = time.toString("mm:ss");
-    m_timeLabel->setText(QString("%1 / %2").arg(m_position).arg(m_duration));
+    m_posTimeLabel->setText(time.toString("mm:ss"));
 }
 
 void BottomWidget::playButtonClicked()

@@ -8,7 +8,7 @@ Titlebar::Titlebar(QWidget *parent)
 {
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
-    QSvgWidget *iconWidget = new QSvgWidget(":/images/icon.svg");
+    QSvgWidget *iconWidget = new QSvgWidget(":/images/kugou-music.svg");
     iconWidget->setFixedSize(22, 22);
 
     m_searchEdit->setFixedWidth(350);

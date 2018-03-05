@@ -76,6 +76,7 @@ void MainWindow::handleSearchFinished(MusicData *data)
 void MainWindow::handleDoubleClicked(const QModelIndex &index)
 {
     m_bottomWidget->updateData(m_musicList.at(index.row()));
+    m_leftSlideBar->updateData(m_musicList.at(index.row()));
 }
 
 void MainWindow::handleDownloadActionClicked(const int &index)

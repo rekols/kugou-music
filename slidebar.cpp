@@ -1,95 +1,127 @@
-
 #include "slidebar.h"
+#include "dsvgrenderer.h"
 #include <QPainter>
-#include <QMouseEvent>
+
+DWIDGET_USE_NAMESPACE
 
 SlideBar::SlideBar(QWidget *parent)
-    : QWidget(parent)
+    : QFrame(parent),
+      m_networkManager(new QNetworkAccessManager(this)),
+      m_layout(new QVBoxLayout(this)),
+      m_buttonGroup(new QButtonGroup),
+      m_coverLabel(new QLabel),
+      m_songLabel(new QLabel),
+      m_singerLabel(new QLabel)
 {
-    m_rowHeight = 40;
-    m_currentIndex = 0;
+    m_titleList << "新歌榜" << "歌手" << "播放列表";
+    setObjectName("SlideBar");
 
-    addItem(tr("新歌"));
-    addItem(tr("排行"));
-    addItem(tr("歌单"));
-    addItem(tr("歌手"));
+    const auto ratio = devicePixelRatioF();
+    m_coverPixmap = DSvgRenderer::render(":/images/info_cover.svg", QSize(55, 55) * ratio);
+    m_coverPixmap.setDevicePixelRatio(ratio);
 
-    setFixedWidth(170);
+    setStyleSheet("#SlideBar {"
+                  "border: solid #eee;"
+                  "border-right-width: 1px;"
+                  "background-color: #FAFAFA;"
+                  "}"
+                  "#NavButton {"
+                  "border: none;"
+                  "text-align: left;"
+                  "font-size: 15px;"
+                  "padding-left: 20px;"
+                  "border: 1px solid transparent;"
+                  "border-left-width: 4px;"
+                  "}"
+                  "#NavButton:hover {"
+                  "background-color: #EDEDEE;"
+                  "}"
+                  "#NavButton:checked {"
+                  "color: #2CA7F8;"
+                  "background-color: #D5EDFE;"
+                  "border: 1px solid #C5E6FD;"
+                  "border-left: 4px solid #2CA7F8;"
+                  "}");
+
+    m_layout->setSpacing(0);
+    m_layout->setMargin(0);
+
+    setFixedWidth(200);
+    initUI();
+
+    connect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SIGNAL(currentIndexChanged(int)));
 }
 
-void SlideBar::addItem(const QString &text)
+void SlideBar::updateData(MusicData *data)
 {
-    m_listItems << text;
+    m_coverLabel->setPixmap(m_coverPixmap);
+    m_songLabel->setText(m_songLabel->fontMetrics().elidedText(data->songName, Qt::ElideRight, 100));
+    m_singerLabel->setText(m_singerLabel->fontMetrics().elidedText(data->singerName, Qt::ElideRight, 100));
 
-    update();
-}
+    QEventLoop loop;
+    QUrl url(data->imgUrl);
+    QNetworkRequest request(url);
+    QNetworkReply *reply = m_networkManager->get(request);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
 
-void SlideBar::paintEvent(QPaintEvent *e)
-{
-    QWidget::paintEvent(e);
-
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor("#FAFAFA"));
-    painter.drawRect(rect());
-
-    int count = 0;
-    for (const QString &itemStr : m_listItems) {
-        const bool isSelected = m_currentIndex == count;
-        QPainterPath itemPath;
-        itemPath.addRect(0, count * m_rowHeight, rect().width() - 1, m_rowHeight);
-
-        if (isSelected) {
-            painter.setPen(QColor(44, 167, 248));
-            painter.setPen(QColor("#0C8ED9"));
-            painter.fillPath(itemPath, QColor(44, 167, 248, 255 * 0.15));
-
-            QPainterPath sepPath;
-            sepPath.addRect(0, count * m_rowHeight, 5, m_rowHeight);
-            painter.fillPath(sepPath, QColor(44, 167, 248));
-
-            QPainterPath topSepPath;
-            topSepPath.addRect(1, count * m_rowHeight, rect().width(), 1);
-            painter.fillPath(topSepPath, QColor(44, 167, 248, 255 * 0.2));
-
-            QPainterPath bottomSepPath;
-            bottomSepPath.addRect(1, count * m_rowHeight + m_rowHeight - 1, rect().width(), 1);
-            painter.fillPath(bottomSepPath, QColor(44, 167, 248, 255 * 0.2));
-
-        } else {
-            painter.setPen("#202020");
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray imgData = reply->readAll();
+        if (!imgData.isEmpty()) {
+            QPixmap pixmap;
+            pixmap.loadFromData(imgData);
+            m_coverLabel->setPixmap(pixmap.scaled(50, 50));
         }
-
-        painter.drawText(QRect(35, count * m_rowHeight, rect().width(), m_rowHeight), Qt::AlignLeft | Qt::AlignVCenter, itemStr);
-
-        ++count;
-    }
-
-    painter.setPen(QColor(230, 230, 230));
-    painter.drawLine(QPoint(rect().width(), 0),
-                     QPoint(rect().width(), rect().height()));
-}
-
-void SlideBar::mouseMoveEvent(QMouseEvent *e)
-{
-    const int index = e->y() / m_rowHeight;
-
-    if (index >= m_listItems.count()) {
-        QWidget::mouseMoveEvent(e);
     }
 }
 
-void SlideBar::mousePressEvent(QMouseEvent *e)
+void SlideBar::initUI()
 {
-    const int index = e->y() / m_rowHeight;
+    for (int i = 0; i < m_titleList.count(); ++i) {
+        QPushButton *btn = new QPushButton(m_titleList.at(i));
+        btn->setCheckable(true);
+        btn->setObjectName("NavButton");
+        btn->setFixedSize(width(), 43);
+        m_layout->addWidget(btn);
+        m_buttonGroup->addButton(btn, i);
 
-    if (index < m_listItems.count() && m_currentIndex != index) {
-        m_currentIndex = index;
-        update();
-
-        emit currentIndexChanged(m_listItems.at(m_currentIndex));
+        if (i == 0) {
+            btn->setChecked(true);
+        }
     }
 
-    QWidget::mousePressEvent(e);
+    m_layout->addStretch();
+
+    m_coverLabel->setFixedSize(55, 55);
+    m_coverLabel->setPixmap(m_coverPixmap);
+
+    m_songLabel->setStyleSheet("QLabel {"
+                               "color: #4A4A4A;"
+                               "font-size: 13px;"
+                               "}");
+
+    m_singerLabel->setStyleSheet("QLabel {"
+                                 "color: #4A4A4A;"
+                                 "font-size: 13px;"
+                                 "}");
+
+    // init bottom widget.
+
+    QWidget *bottomWidget = new QWidget;
+    QHBoxLayout *bottomLayout = new QHBoxLayout(bottomWidget);
+    QVBoxLayout *infoLayout = new QVBoxLayout;
+
+    infoLayout->addStretch();
+    infoLayout->addWidget(m_songLabel);
+    infoLayout->addWidget(m_singerLabel);
+    infoLayout->addStretch();
+
+    bottomLayout->addSpacing(5);
+    bottomLayout->addWidget(m_coverLabel);
+    bottomLayout->addSpacing(3);
+    bottomLayout->addLayout(infoLayout);
+    bottomWidget->setFixedHeight(70);
+
+    m_layout->addWidget(bottomWidget);
+    m_layout->addSpacing(5);
 }
