@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories=Utility;Music;
+Comment=kugou-music
+Exec=kugou-music
+Icon=kugou-music
+Name=Kugou Music
+StartupNotify=true
+TryExec=kugou-music
+Type=Application
+
+# Translations
+Name[zh_CN]=酷狗音乐

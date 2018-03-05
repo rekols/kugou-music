@@ -13,14 +13,14 @@ int main(int argc, char *argv[])
     app.setOrganizationName("deepin");
     app.setApplicationVersion(DApplication::buildVersion("1.0"));
     app.setApplicationAcknowledgementPage("https://github.com/rekols");
-    app.setProductIcon(QIcon(":/images/icon.svg"));
+    app.setProductIcon(QIcon(":/images/kugou-music.svg"));
     app.setProductName(DApplication::translate("Main", "酷狗音乐"));
     app.setApplicationDescription(DApplication::translate("Main", "本项目代码不用于商用，仅限研究和学习使用"));
 
     if (app.setSingleInstance("kugou-music")) {
         MainWindow w;
         w.show();
-        w.setWindowIcon(QIcon(":/images/icon.svg"));
+        w.setWindowIcon(QIcon(":/images/kugou-music.svg"));
         w.move((QApplication::desktop()->width() - w.width()) / 2,
                (QApplication::desktop()->height() - w.height()) / 2);
 

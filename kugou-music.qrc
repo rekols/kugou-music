@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
     	<file>qss/style.qss</file>
-        <file>images/icon.svg</file>
+        <file>images/kugou-music.svg</file>
         <file>images/info_cover.svg</file>
         <file>images/next-hover.svg</file>
         <file>images/next-normal.svg</file>
