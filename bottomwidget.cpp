@@ -22,6 +22,9 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     m_volumeButton = new DImageButton(":/images/audio-volume-high-normal.svg",
                                       ":/images/audio-volume-high-hover.svg",
                                       ":/images/audio-volume-high-press.svg");
+    m_repeatButton = new DImageButton(":/images/repeat_all_normal.svg",
+                                      ":/images/repeat_all_hover.svg",
+                                    ":/images/repeat_all_press.svg");
     m_songLabel = new QLabel;
     m_timeLabel = new QLabel;
     m_songSlider = new QSlider(Qt::Horizontal);
@@ -33,11 +36,14 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 
     m_totalTimeLabel->setFixedWidth(40);
     m_posTimeLabel->setFixedWidth(40);
+    // m_totalTimeLabel->setText("--:--");
+    // m_posTimeLabel->setText("--:--");
 
     m_previousButton->setFixedSize(30, 30);
     m_playButton->setFixedSize(30, 30);
     m_nextButton->setFixedSize(30, 30);
     m_volumeButton->setFixedSize(30, 30);
+    m_repeatButton->setFixedSize(30, 30);
 
     m_songSlider->setFixedHeight(25);
     m_songSlider->setCursor(Qt::PointingHandCursor);
@@ -54,13 +60,13 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     songLayout->addWidget(m_timeLabel);
     songLayout->addStretch();
 
-    mainLayout->addSpacing(25);
+    mainLayout->addSpacing(35);
     mainLayout->addWidget(m_previousButton);
     mainLayout->addSpacing(15);
     mainLayout->addWidget(m_playButton);
     mainLayout->addSpacing(15);
     mainLayout->addWidget(m_nextButton);
-    mainLayout->addSpacing(60);
+    mainLayout->addSpacing(45);
     mainLayout->addWidget(m_posTimeLabel);
     mainLayout->addSpacing(5);
     mainLayout->addWidget(m_songSlider);
@@ -70,6 +76,8 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     mainLayout->addWidget(m_volumeButton);
     mainLayout->addSpacing(5);
     mainLayout->addWidget(m_volumeSlider);
+    mainLayout->addSpacing(5);
+    mainLayout->addWidget(m_repeatButton);
     mainLayout->addSpacing(20);
     setFixedHeight(65);
 

@@ -13,7 +13,7 @@ SlideBar::SlideBar(QWidget *parent)
       m_songLabel(new QLabel),
       m_singerLabel(new QLabel)
 {
-    m_titleList << "新歌榜" << "歌手" << "播放列表";
+    m_titleList << "新歌榜" << "歌手" << "搜索列表" << "播放列表";
     setObjectName("SlideBar");
 
     const auto ratio = devicePixelRatioF();

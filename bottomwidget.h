@@ -36,6 +36,7 @@ private:
     DImageButton *m_playButton;
     DImageButton *m_nextButton;
     DImageButton *m_volumeButton;
+    DImageButton *m_repeatButton;
     QLabel *m_songLabel;
     QLabel *m_timeLabel;
     QLabel *m_totalTimeLabel;
