@@ -28,7 +28,7 @@
 class ListView : public QTableView
 {
     Q_OBJECT
-    
+
 public:
     ListView(QWidget *parent = nullptr);
     ~ListView();

@@ -8,7 +8,8 @@ DWIDGET_USE_NAMESPACE
 
 BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     : QWidget(parent),
-      m_player(p)
+      m_player(p),
+      m_settings("kugou-music", "config")
 {
     m_previousButton = new DImageButton(":/images/previous-normal.svg",
                                         ":/images/previous-hover.svg",
@@ -25,15 +26,16 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     m_repeatButton = new DImageButton(":/images/repeat_all_normal.svg",
                                       ":/images/repeat_all_hover.svg",
                                     ":/images/repeat_all_press.svg");
-    m_songLabel = new QLabel;
-    m_timeLabel = new QLabel;
     m_songSlider = new QSlider(Qt::Horizontal);
     m_volumeSlider = new QSlider(Qt::Horizontal);
     m_totalTimeLabel = new QLabel;
     m_posTimeLabel = new QLabel;
 
-    m_volumeSlider->setFixedWidth(100);
+    int volume = m_settings.value("volume", 100).toInt();
+    m_volumeSlider->setValue(volume);
+    m_player->setVolume(volume);
 
+    m_volumeSlider->setFixedWidth(100);
     m_totalTimeLabel->setFixedWidth(40);
     m_posTimeLabel->setFixedWidth(40);
     // m_totalTimeLabel->setText("--:--");
@@ -47,18 +49,10 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 
     m_songSlider->setFixedHeight(25);
     m_songSlider->setCursor(Qt::PointingHandCursor);
-    m_songLabel->setFixedWidth(200);
-    m_timeLabel->setFixedWidth(200);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
-
-    QVBoxLayout *songLayout = new QVBoxLayout;
-    songLayout->addStretch();
-    songLayout->addWidget(m_songLabel);
-    songLayout->addWidget(m_timeLabel);
-    songLayout->addStretch();
 
     mainLayout->addSpacing(35);
     mainLayout->addWidget(m_previousButton);
@@ -91,12 +85,8 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
             [=] {
                 m_player->setPosition(m_songSlider->value());
             });
-}
 
-void BottomWidget::updateData(MusicData *data)
-{
-    m_musicData = data;
-    m_player->setMedia(QUrl(data->url));
+    connect(m_volumeSlider, &QSlider::valueChanged, this, &BottomWidget::handleVolumeValueChanged);
 }
 
 void BottomWidget::handleStateChanged(QMediaPlayer::State status)
@@ -116,21 +106,15 @@ void BottomWidget::handleMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
     switch (status) {
     case QMediaPlayer::LoadingMedia:
-        m_songLabel->setText("加载中...");
         m_songSlider->setValue(0);
         break;
 
     case QMediaPlayer::EndOfMedia:
-        m_player->play();
         m_songSlider->setValue(0);
     break;
 
     case QMediaPlayer::LoadedMedia: case QMediaPlayer::BufferedMedia:
-        QFontMetrics fm(m_songLabel->font());
-        const QString text = m_musicData->songName + " - " + m_musicData->singerName;
-        m_songLabel->setText(fm.elidedText(text, Qt::ElideRight, 195));
         m_player->play();
-        // m_timeLabel->show();
         break;
     }
 }
@@ -151,6 +135,12 @@ void BottomWidget::handlePositionChanged(qint64 position)
 
     m_songSlider->setValue(position);
     m_posTimeLabel->setText(time.toString("mm:ss"));
+}
+
+void BottomWidget::handleVolumeValueChanged(int value)
+{
+    m_settings.setValue("volume", value);
+    m_player->setVolume(value);
 }
 
 void BottomWidget::playButtonClicked()

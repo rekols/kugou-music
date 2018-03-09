@@ -7,6 +7,7 @@
 #include <QSvgWidget>
 #include <QSlider>
 #include <QMediaPlayer>
+#include <QSettings>
 #include "dimagebutton.h"
 #include "musicdata.h"
 
@@ -19,13 +20,12 @@ class BottomWidget : public QWidget
 public:
     explicit BottomWidget(QMediaPlayer *p, QWidget *parent = nullptr);
 
-    void updateData(MusicData *);
-
 private:
     void handleStateChanged(QMediaPlayer::State status);
     void handleMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void handleDurationChanged(qint64 duration);
     void handlePositionChanged(qint64 position);
+    void handleVolumeValueChanged(int value);
     void playButtonClicked();
 
 protected:
@@ -37,14 +37,12 @@ private:
     DImageButton *m_nextButton;
     DImageButton *m_volumeButton;
     DImageButton *m_repeatButton;
-    QLabel *m_songLabel;
-    QLabel *m_timeLabel;
     QLabel *m_totalTimeLabel;
     QLabel *m_posTimeLabel;
     QSlider *m_songSlider;
     QSlider *m_volumeSlider;
     QMediaPlayer *m_player;
-    MusicData *m_musicData;
+    QSettings m_settings;
 
     QPixmap m_coverPixmap;
 };
