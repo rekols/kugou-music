@@ -26,6 +26,8 @@ private:
     void handleDurationChanged(qint64 duration);
     void handlePositionChanged(qint64 position);
     void handleVolumeValueChanged(int value);
+    void handleNextButtonClicked();
+    void handlePreviousButtonClicked();
     void playButtonClicked();
 
 protected:

@@ -2,6 +2,7 @@
 #include "dsvgrenderer.h"
 #include <QPainter>
 #include <QFormLayout>
+#include <QMediaPlaylist>
 #include <QTime>
 
 DWIDGET_USE_NAMESPACE
@@ -77,6 +78,8 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 
     connect(m_player, &QMediaPlayer::stateChanged, this, &BottomWidget::handleStateChanged);
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &BottomWidget::handleMediaStatusChanged);
+    connect(m_nextButton, &DImageButton::clicked, this, &BottomWidget::handleNextButtonClicked);
+    connect(m_previousButton, &DImageButton::clicked, this, &BottomWidget::handlePreviousButtonClicked);
     connect(m_playButton, &DImageButton::clicked, this, &BottomWidget::playButtonClicked);
     connect(m_player, &QMediaPlayer::durationChanged, this, &BottomWidget::handleDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged, this, &BottomWidget::handlePositionChanged);
@@ -141,6 +144,16 @@ void BottomWidget::handleVolumeValueChanged(int value)
 {
     m_settings.setValue("volume", value);
     m_player->setVolume(value);
+}
+
+void BottomWidget::handleNextButtonClicked()
+{
+    m_player->playlist()->next();
+}
+
+void BottomWidget::handlePreviousButtonClicked()
+{
+    m_player->playlist()->previous();
 }
 
 void BottomWidget::playButtonClicked()

@@ -42,6 +42,7 @@ void ListView::init()
     m_itemModel->setHorizontalHeaderLabels(titles);
     setModel(m_itemModel);
 
+    setWordWrap(true);
     setShowGrid(false);
     setAlternatingRowColors(true);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
