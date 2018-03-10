@@ -33,6 +33,7 @@ private slots:
     void handleSearchFinished(MusicData *);
     void handleDoubleClicked(const QModelIndex &);
     void handleDownloadActionClicked(const int &index);
+    void handlePlayPressed(const int &index);
 
 private:
     Titlebar *m_titlebar;

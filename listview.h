@@ -39,6 +39,7 @@ public:
 
 signals:
     void downloadActionPress(const int &index);
+    void playActionPress(const int &index);
 
 private:
     QStandardItemModel *m_itemModel;

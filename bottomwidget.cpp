@@ -83,6 +83,19 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
     connect(m_playButton, &DImageButton::clicked, this, &BottomWidget::playButtonClicked);
     connect(m_player, &QMediaPlayer::durationChanged, this, &BottomWidget::handleDurationChanged);
     connect(m_player, &QMediaPlayer::positionChanged, this, &BottomWidget::handlePositionChanged);
+    connect(m_repeatButton, &DImageButton::clicked, this,
+            [=] {
+                QMediaPlaylist::PlaybackMode mode = m_player->playlist()->playbackMode();
+
+                switch (mode) {
+                case QMediaPlaylist::CurrentItemInLoop:
+                    m_player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
+                    break;
+                case QMediaPlaylist::QMediaPlaylist::Loop:
+                    m_player->playlist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+                    break;
+                }
+            });
 
     connect(m_songSlider, &QSlider::sliderPressed, this,
             [=] {
@@ -90,6 +103,24 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
             });
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &BottomWidget::handleVolumeValueChanged);
+
+    connect(m_player->playlist(), &QMediaPlaylist::playbackModeChanged, this,
+            [=] (QMediaPlaylist::PlaybackMode mode) {
+                qDebug() << mode << "~~~~~~~~";
+
+                switch (mode) {
+                case QMediaPlaylist::CurrentItemInLoop:
+                    m_repeatButton->setNormalPic(":/images/repeat_single_normal.svg");
+                    m_repeatButton->setHoverPic(":/images/repeat_single_hover.svg");
+                    m_repeatButton->setPressPic(":/images/repeat_single_press.svg");
+                    break;
+                case QMediaPlaylist::QMediaPlaylist::Loop:
+                    m_repeatButton->setNormalPic(":/images/repeat_all_normal.svg");
+                    m_repeatButton->setHoverPic(":/images/repeat_all_hover.svg");
+                    m_repeatButton->setPressPic(":/images/repeat_all_press.svg");
+                    break;
+                }
+            });
 }
 
 void BottomWidget::handleStateChanged(QMediaPlayer::State status)

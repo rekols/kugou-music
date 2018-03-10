@@ -68,11 +68,14 @@ void ListView::init()
                 QModelIndex index = indexAt(point);
                 QMenu menu(this);
 
+                QAction *playAction = menu.addAction("播放");
                 QAction *downAction = menu.addAction("下载");
                 QAction *a = menu.exec(QCursor::pos());
 
                 if (a == downAction) {
                     emit downloadActionPress(index.row());
+                } else if (a == playAction) {
+                    emit playActionPress(index.row());
                 }
             });
 }
