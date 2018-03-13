@@ -5,6 +5,7 @@
 #include <QMediaPlaylist>
 #include <QTime>
 
+
 DWIDGET_USE_NAMESPACE
 
 BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
