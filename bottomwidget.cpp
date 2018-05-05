@@ -98,7 +98,7 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
                 }
             });
 
-    connect(m_songSlider, &QSlider::sliderPressed, this,
+    connect(m_songSlider, &QSlider::sliderReleased, this,
             [=] {
                 m_player->setPosition(m_songSlider->value());
             });
@@ -107,19 +107,14 @@ BottomWidget::BottomWidget(QMediaPlayer *p, QWidget *parent)
 
     connect(m_player->playlist(), &QMediaPlaylist::playbackModeChanged, this,
             [=] (QMediaPlaylist::PlaybackMode mode) {
-                qDebug() << mode << "~~~~~~~~";
-
-                switch (mode) {
-                case QMediaPlaylist::CurrentItemInLoop:
+                if (mode == QMediaPlaylist::CurrentItemInLoop) {
                     m_repeatButton->setNormalPic(":/images/repeat_single_normal.svg");
                     m_repeatButton->setHoverPic(":/images/repeat_single_hover.svg");
                     m_repeatButton->setPressPic(":/images/repeat_single_press.svg");
-                    break;
-                case QMediaPlaylist::QMediaPlaylist::Loop:
+                } else if (mode == QMediaPlaylist::Loop){
                     m_repeatButton->setNormalPic(":/images/repeat_all_normal.svg");
                     m_repeatButton->setHoverPic(":/images/repeat_all_hover.svg");
                     m_repeatButton->setPressPic(":/images/repeat_all_press.svg");
-                    break;
                 }
             });
 }
@@ -165,6 +160,10 @@ void BottomWidget::handleDurationChanged(qint64 duration)
 
 void BottomWidget::handlePositionChanged(qint64 position)
 {
+    if (m_songSlider->isSliderDown()) {
+        return;
+    }
+
     QTime time(0, 0, 0);
     time = time.addMSecs(position);
 
