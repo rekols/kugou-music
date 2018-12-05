@@ -1,5 +1,4 @@
 #include "slidebar.h"
-#include "dsvgrenderer.h"
 #include <QPainter>
 
 DWIDGET_USE_NAMESPACE
@@ -17,7 +16,7 @@ SlideBar::SlideBar(QWidget *parent)
     setObjectName("SlideBar");
 
     const auto ratio = devicePixelRatioF();
-    m_coverPixmap = DSvgRenderer::render(":/images/info_cover.svg", QSize(55, 55) * ratio);
+    m_coverPixmap = QPixmap(":/images/info_cover.svg");
     m_coverPixmap.setDevicePixelRatio(ratio);
 
     setStyleSheet("#SlideBar {"
