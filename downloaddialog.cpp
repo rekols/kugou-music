@@ -56,16 +56,23 @@ DownloadDialog::DownloadDialog(MusicData *data, QWidget *parent)
     layout->addLayout(formLayout);
     layout->addStretch();
 
-    connect(btn1, &QPushButton::clicked, this,
-            [=] {
-                QApplication::clipboard()->setText(data->url);
+    if (data->url_320.isEmpty()) {
+        btn2->setEnabled(false);
+    }
 
-                // DToast *toast = new DToast(this);
-                // toast->setText("复制成功");
-                // toast->setFixedHeight(40);
-                // toast->pop();
-                // toast->move((width() - toast->width()) / 2, (height() - 60));
-            });
+    connect(btn1, &QPushButton::clicked, this, [=] {
+        QApplication::clipboard()->setText(data->url);
+
+        // DToast *toast = new DToast(this);
+        // toast->setText("复制成功");
+        // toast->setFixedHeight(40);
+        // toast->pop();
+        // toast->move((width() - toast->width()) / 2, (height() - 60));
+    });
+
+    connect(btn2, &QPushButton::clicked, this, [=] {
+       QApplication::clipboard()->setText(data->url_320);
+    });
 }
 
 DownloadDialog::~DownloadDialog()

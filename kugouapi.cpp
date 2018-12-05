@@ -68,6 +68,7 @@ void KugouAPI::handleSearchFinished()
         data->songName = currentObject.value("songname").toString();
         data->singerName = currentObject.value("singername").toString();
         data->songHash = currentObject.value("hash").toString();
+        data->song320Hash = currentObject.value("320hash").toString();
 
         QUrl url(QString("http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=%1").arg(data->songHash));
         QNetworkRequest request(url);
@@ -90,6 +91,21 @@ void KugouAPI::handleSearchFinished()
             data->timeLength = time.toString("mm:ss");
 
             emit searchFinished(data);
+        }
+
+        if (!data->song320Hash.isEmpty()) {
+            url.setUrl(QString("http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=%1").arg(data->song320Hash));
+            request.setUrl(url);
+            QNetworkReply *reply = m_manager->get(request);
+            QEventLoop loop;
+            connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            if (reply->error() == QNetworkReply::NoError) {
+                QJsonDocument doc = QJsonDocument::fromJson(QByteArray(reply->readAll()));
+                QJsonObject object = doc.object();
+                data->url_320 = object.value("url").toString();
+            }
         }
         reply->deleteLater();
     }

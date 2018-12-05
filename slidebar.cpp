@@ -1,8 +1,6 @@
 #include "slidebar.h"
 #include <QPainter>
 
-DWIDGET_USE_NAMESPACE
-
 SlideBar::SlideBar(QWidget *parent)
     : QFrame(parent),
       m_networkManager(new QNetworkAccessManager(this)),

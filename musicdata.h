@@ -25,9 +25,11 @@ struct MusicData
     QString songName;
     QString singerName;
     QString songHash;
+    QString song320Hash;
     QString timeLength;
     QString imgUrl;
     QString url;
+    QString url_320;
 };
 
 #endif
